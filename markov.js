@@ -16,7 +16,7 @@ class MarkovMachine {
   /** Get markov chain: returns Map of Markov chains.
    *
    *  For text of "The cat in the hat.", chains will be:
-   * 
+   *
    *  {
    *   "The": ["cat"],
    *   "cat": ["in"],
@@ -24,21 +24,39 @@ class MarkovMachine {
    *   "the": ["hat."],
    *   "hat.": [null],
    *  }
-   * 
+   *
    * */
 
   getChains() {
-    let chains = {};
+    // let chains = {};
+
+    let map1 = new Map();
+    debugger;
 
     for(let i =0; i < this.words.length; i++) {
       if(i === this.words.length - 1) {
-        chains[this.words[i]] ? chains[this.words[i]].push(null) : chains[this.words[i]] = [null]
+        if(map1.has(this.words[i])){
+
+          map1.get(this.words[i]).push(null);
+          // chain.push(null);
+        } else{
+          map1.set(this.words[i], [null]);
+        }
+        // chains[this.words[i]] ? chains[this.words[i]].push(null) : chains[this.words[i]] = [null]
+        // map1.has(this.words[i]) ?  map1.get(this.words[i]).push(null) : map1.set(this.words[i], null);
+
       }
       else {
-        chains[this.words[i]] ? chains[this.words[i]].push(this.words[i+1]) : chains[this.words[i]] = [this.words[i+1]];
+        if(map1.has(this.words[i])){
+          map1.get(this.words[i]).push(this.words[i+1]);
+          //chain.push(this.words[i+1]);
+        }else{
+          map1.set(this.words[i],[this.words[i+1]]);
+        }
+        // map1.has(this.words[i]) ? map1[this.words[i]].push(this.words[i+1]) : map1.set(this.words[i],this.words[i+1]);
       }
     }
-    return chains;
+    return map1;
   }
 
 
@@ -55,9 +73,9 @@ class MarkovMachine {
     let lastWord = this.words[0];
 
     while(lastWord !== null) {
-      let chainLength = this.chains[lastWord].length;
+      let chainLength = this.chains.get(lastWord).length;
       let randomIndex = Math.floor(Math.random()*chainLength);
-      lastWord = this.chains[lastWord][randomIndex];
+      lastWord = this.chains.get(lastWord)[randomIndex];
       if(lastWord !== null) {
         text += ` ${lastWord}`;
       }
@@ -66,6 +84,7 @@ class MarkovMachine {
     return text;
 
   }
+
 }
 
 const catInHatMachine = new MarkovMachine("The cat is in the hat. The cat is the cat. The hat is a cat.");
